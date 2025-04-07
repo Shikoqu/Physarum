@@ -11,30 +11,42 @@ class Engine:
         self.current_bitmap: np.ndarray = bitmap.swapaxes(0, 1).copy()
         self.pipeline: Pipeline = pipeline
 
-        self._shape: tuple[int, int] = bitmap.shape[::-1]
-        self._clock: pg.time.Clock = None
+        self._clock: pg.time.Clock | None = None
         self._is_running: bool = False
-        self._window_size: tuple[int, int] = None
-        self._display_surface: pg.Surface = None
+
+        self._shape: tuple[int, int] = bitmap.shape[::-1]
+        self._resize_scale: tuple[float, float] = (1., 1.)
+        self._window_size: tuple[int, int] | None = None
+        self._display_surface: pg.Surface | None = None
 
     def init_pygame(self):
         pg.init()
         pg.display.set_caption("physarum")
 
-        self._window_size = self._shape
-        self._display_surface = pg.display.set_mode(self._window_size)
+        self._window_size = np.multiply(self._shape, self._resize_scale)
+        self._display_surface = pg.display.set_mode(self._window_size, pg.RESIZABLE)
         self._clock = pg.time.Clock()
         self._is_running = True
 
+    def resize_window(self, size: tuple[int, int]):
+        scale = np.min(np.divide(size, self._shape))
+        self._resize_scale = (scale, scale)
+        self._window_size = np.multiply(self._shape, self._resize_scale)
+        self._display_surface = pg.display.set_mode(self._window_size, pg.RESIZABLE)
+
     def handle_pg_events(self, events):
         for event in events:
-            if event.type == pg.QUIT:
-                self._is_running = False
+            match event.type:
+                case pg.QUIT:
+                    self._is_running = False
+                case pg.VIDEORESIZE:
+                    self.resize_window((event.w, event.h))
 
     def process(self):
         self.pipeline.process_frame(self.current_bitmap)
         image = cv2.cvtColor(self.current_bitmap, cv2.COLOR_GRAY2RGB)
         surface = pg.surfarray.make_surface(image)
+        surface = pg.transform.scale(surface, self._window_size)
         self._display_surface.blit(surface, (0, 0))
         pg.display.flip()
 

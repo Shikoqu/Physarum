@@ -1,22 +1,18 @@
 import numpy as np
 
-from app.shaders import BaseShader
+from app.processing.shaders import BaseShader
 
 
 class Pipeline:
     def __init__(self):
-        self.i_density: np.ndarray = None
-        self.i_noise: np.ndarray = None
-        self.i_pheromone: np.ndarray = None
         self.shaders: list[BaseShader] = []
 
-    def __iadd__(self, shader: BaseShader) -> None:
+    def __iadd__(self, shader: BaseShader) -> 'Pipeline':
         match shader:
             case BaseShader(): self.shaders.append(shader)
             case _: raise TypeError(f"Unsupported shader type: {type(shader)}")
         return self
 
-    def process_frame(self, image: np.ndarray) -> None:
+    def process_frame(self, bitmap: np.ndarray) -> None:
         for shader in self.shaders:
-            shader.apply(image)
-
+            shader.apply(bitmap)

@@ -1,7 +1,8 @@
 from numba import njit, prange
 import numpy as np
 
-from app.time_it import time_it
+from app.time_it import time_it, time_it_configure
+
 
 def sample_sensors(
         bitmap: np.ndarray,
@@ -11,9 +12,12 @@ def sample_sensors(
         bitmap,
         sensor_positions,
     )
-    return sample_sensors1(*args)
+    pass
+    # return sample_sensors1(*args)
 
 # # # # # # # # # # # # # # # # # # # # # # # # #
+
+time_it_configure(__name__)
 
 @time_it
 def sample_sensors1(*args):

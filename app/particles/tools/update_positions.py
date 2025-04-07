@@ -20,7 +20,7 @@ def update_positions(
 
 # # # # # # # # # # # # # # # # # # # # # # # # #
 
-time_it_configure(__name__)
+# time_it_configure(__name__)
 
 @time_it
 def update_positions1(*args):

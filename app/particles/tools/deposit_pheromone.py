@@ -1,7 +1,8 @@
 from numba import njit, prange
 import numpy as np
 
-from app.time_it import time_it
+from app.time_it import time_it, time_it_configure
+
 
 def deposit_pheromone(
         bitmap: np.ndarray,
@@ -15,6 +16,8 @@ def deposit_pheromone(
     # deposit_pheromones2(*args)
 
 # # # # # # # # # # # # # # # # # # # # # # # # #
+
+# time_it_configure(__name__)
 
 @time_it
 def deposit_pheromone1(*args):

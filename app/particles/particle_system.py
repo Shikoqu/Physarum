@@ -30,8 +30,8 @@ class ParticleSystem:
     def deposit_pheromone(self, bitmap: np.ndarray):
         deposit_pheromone(bitmap, self.positions)
 
-    def update_angles(self, pheromone_bitmap) -> None:
-        update_angles(self.angles, self._sample_sensors(pheromone_bitmap))
+    def update_angles(self, bitmap) -> None:
+        update_angles(self.angles, self._sample_sensors(bitmap))
 
     # # # # # # # # # # # # # # # # # # # # # # # # #
 

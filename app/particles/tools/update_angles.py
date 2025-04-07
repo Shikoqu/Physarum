@@ -2,7 +2,8 @@ from numba import njit, prange
 import numpy as np
 
 from app.config import MAX_TURN_ANGLE
-from app.time_it import time_it
+from app.time_it import time_it, time_it_configure
+
 
 def update_angles(
         angles: np.ndarray,
@@ -16,6 +17,8 @@ def update_angles(
     update_angles1(*args)
 
 # # # # # # # # # # # # # # # # # # # # # # # # #
+
+# time_it_configure(__name__)
 
 @time_it
 def update_angles1(*args):

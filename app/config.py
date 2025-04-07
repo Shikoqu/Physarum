@@ -11,7 +11,7 @@ DIFFUSE_KERNEL_SIZE: np.uint8 = np.uint8(3)
 DIFFUSE_SIGMA: np.float32 = np.float32(0.0)
 
 # particles
-NUM_PARTICLES: np.uint32 = np.uint32(2137)
+NUM_PARTICLES: np.uint32 = np.uint32(1_000_000)
 SENSOR_ANGLE: np.float32 = np.float32(np.pi / 8)
 SENSOR_DISTANCE: np.uint8 = np.uint8(3)
 

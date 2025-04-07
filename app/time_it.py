@@ -1,7 +1,7 @@
 import functools
 import time
 
-ENABLED: bool = False
+ENABLED: bool = True
 ENABLED_FUNCTIONS: set[str] = set()
 
 

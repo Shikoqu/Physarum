@@ -2,7 +2,7 @@ import numpy as np
 
 
 # main
-IMAGE_PATH: str = 'assets/furry.png'
+IMAGE_PATH: str = 'assets/poland.bmp'
 FPS_LIMIT: float = 60
 
 # shaders
@@ -15,5 +15,5 @@ NUM_PARTICLES: np.uint32 = np.uint32(36_000)
 SENSOR_ANGLE: np.float32 = np.float32(np.pi / 8)
 SENSOR_DISTANCE: np.uint8 = np.uint8(8)
 
-MAX_TURN_ANGLE: np.float32 = np.float32(np.pi / 16)
+MAX_TURN_ANGLE: np.float32 = np.float32(np.pi / 10)
 STEP_SIZE: np.float32 = np.float32(2)

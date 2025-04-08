@@ -42,7 +42,7 @@ def _sample_sensors1(
     num_particles = sensor_positions.shape[0]
     max_x = food_bitmap.shape[0] - 1
     max_y = food_bitmap.shape[1] - 1
-    sensor_values = np.zeros((num_particles, 3), dtype=np.uint8)
+    sensor_values = np.zeros((num_particles, 3), dtype=float)
 
     for i in prange(num_particles):
         for j in prange(3):
@@ -68,10 +68,12 @@ def _sample_sensors2(
     xs = np.clip(sensor_positions[:, :, 0].astype(np.uint32), 0, max_x)
     ys = np.clip(sensor_positions[:, :, 1].astype(np.uint32), 0, max_y)
 
-    return combine(pheromone_bitmap[xs, ys], food_bitmap[xs, ys])
+    # no longer works...
+    return pheromone_bitmap[xs, ys] + food_bitmap[xs, ys]
+
 
 # # # # # # # # # # # # # # # # # # # # # # # # #
 
 @njit
-def combine(pheromone: np.ndarray, food: np.ndarray):
-    return pheromone + food
+def combine(pheromone, food) -> float:
+    return int(pheromone) + int(food)*10

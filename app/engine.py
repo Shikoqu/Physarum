@@ -68,9 +68,9 @@ class Engine:
 
         if self.food_bitmap is not None:
             image = np.stack([
-                self.current_bitmap,
-                self.current_bitmap,
                 self.food_bitmap,
+                self.food_bitmap,
+                self.current_bitmap,
             ], axis=2)
         else:
             image = cv2.cvtColor(self.current_bitmap, cv2.COLOR_GRAY2RGB)

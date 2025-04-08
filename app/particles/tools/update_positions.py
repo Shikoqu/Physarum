@@ -1,8 +1,7 @@
-from numba import njit, prange
 import numpy as np
 
 from app.config import STEP_SIZE
-from app.time_it import time_it, time_it_configure
+from app.utils.time_it import time_it
 
 
 def update_positions(
@@ -33,7 +32,7 @@ def _update_positions1(
         positions: np.ndarray,
         angles: np.ndarray,
         bitmap_shape: np.ndarray,
-        step_size: np.uint8,
+        step_size: np.float32,
 ) -> None:
     steps = np.stack([np.sin(angles), np.cos(angles)], axis=1)
 

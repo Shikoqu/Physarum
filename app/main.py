@@ -23,21 +23,23 @@ def get_pipeline(
     
     pipeline += PheromoneDepositShader(particle_system)
     pipeline += ParticleUpdateShader(particle_system, food_bitmap, noise_bitmap)
-    # pipeline += Decay()
-    # pipeline += Diffuse()
-    pipeline += DiffuseAndDecay()
+    pipeline += Decay()
+    pipeline += Diffuse()
+    # pipeline += DiffuseAndDecay()
 
     return pipeline
 
 
 def main():
     rng = np.random.default_rng(seed=int(time.time()))
-    image = cv2.imread(IMAGE_PATH)
-    shape = image.shape[:2]
+    # image = cv2.imread(IMAGE_PATH)
+    # shape = image.shape[:2]
+    shape = (180, 320)
 
-    food_bitmap = image[:, :, 2].copy()  # Use the blue channel as food
+    # food_bitmap = image[:, :, 2].copy()  # Use the blue channel as food
+    food_bitmap = np.zeros(shape, dtype=np.uint8)
     noise_bitmap = rng.integers(0, 255, shape, dtype=np.uint8)
-    pheromone_bitmap = np.zeros_like(food_bitmap)
+    pheromone_bitmap = np.zeros(shape, dtype=np.uint8)
 
     particle_system = ParticleSystem(shape)
 

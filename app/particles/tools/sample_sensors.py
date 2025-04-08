@@ -1,45 +1,73 @@
 from numba import njit, prange
 import numpy as np
 
-from app.time_it import time_it, time_it_configure
+from app.utils.time_it import time_it
 
 
 def sample_sensors(
-        bitmap: np.ndarray,
+        pheromone_bitmap: np.ndarray,
+        food_bitmap: np.ndarray,
         sensor_positions: np.ndarray
-) -> np.ndarray:
+) -> tuple[np.ndarray, np.ndarray]:
     args = (
-        bitmap,
+        pheromone_bitmap,
+        food_bitmap,
         sensor_positions,
     )
-    pass
-    # return sample_sensors1(*args)
+    return sample_sensors1(*args)
+    # return sample_sensors2(*args)
 
 # # # # # # # # # # # # # # # # # # # # # # # # #
 
-time_it_configure(__name__)
+# time_it_configure(__name__)
 
 @time_it
 def sample_sensors1(*args):
-    """1M particles ~..."""
+    """1M particles ~1 ms"""
     return _sample_sensors1(*args)
+
+@time_it
+def sample_sensors2(*args):
+    """1M particles ~12 ms"""
+    return _sample_sensors2(*args)
 
 # # # # # # # # # # # # # # # # # # # # # # # # #
 
 @njit(parallel=True)
 def _sample_sensors1(
-        bitmap: np.ndarray,
-        sensor_positions: np.ndarray
-) -> np.ndarray:
+        pheromone_bitmap: np.ndarray,
+        food_bitmap: np.ndarray,
+        sensor_positions: np.ndarray,
+) -> tuple[np.ndarray, np.ndarray]:
     num_particles = sensor_positions.shape[0]
-    sensor_values = np.zeros((num_particles, 3))
-    sensor_positions_scaled = sensor_positions * bitmap.shape
+    max_x = food_bitmap.shape[0] - 1
+    max_y = food_bitmap.shape[1] - 1
+    pheromone_sensor_values = np.zeros((num_particles, 3), dtype=np.uint8)
+    food_sensor_values = np.zeros((num_particles, 3), dtype=np.uint8)
 
     for i in prange(num_particles):
         for j in prange(3):
-            x, y = sensor_positions_scaled[i, j].astype(np.int32)
-            x = np.clip(x, 0, bitmap.shape[1] - 1)
-            y = np.clip(y, 0, bitmap.shape[0] - 1)
-            sensor_values[i, j] = bitmap[y, x]
+            x = int(sensor_positions[i, j, 0])
+            y = int(sensor_positions[i, j, 1])
 
-    return sensor_values
+            x = min(max(x, 0), max_x)
+            y = min(max(y, 0), max_y)
+
+            pheromone_sensor_values[i, j] = pheromone_bitmap[x, y]
+            food_sensor_values[i, j] = food_bitmap[x, y]
+
+    return pheromone_sensor_values, food_sensor_values
+
+
+def _sample_sensors2(
+        pheromone_bitmap: np.ndarray,
+        food_bitmap: np.ndarray,
+        sensor_positions: np.ndarray
+) -> tuple[np.ndarray, np.ndarray]:
+    max_x = food_bitmap.shape[0] - 1
+    max_y = food_bitmap.shape[1] - 1
+
+    xs = np.clip(sensor_positions[:, :, 0].astype(np.uint32), 0, max_x)
+    ys = np.clip(sensor_positions[:, :, 1].astype(np.uint32), 0, max_y)
+
+    return pheromone_bitmap[xs, ys], food_bitmap[xs, ys]

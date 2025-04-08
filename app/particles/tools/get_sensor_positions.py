@@ -1,7 +1,7 @@
 from numba import njit, prange
 import numpy as np
 
-from app.time_it import time_it, time_it_configure
+from app.utils.time_it import time_it
 
 
 def get_sensor_positions(
@@ -19,7 +19,7 @@ def get_sensor_positions(
 
 # # # # # # # # # # # # # # # # # # # # # # # # #
 
-time_it_configure(__name__)
+# time_it_configure(__name__)
 
 @time_it
 def get_sensor_positions1(*args):

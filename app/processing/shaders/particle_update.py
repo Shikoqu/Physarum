@@ -16,5 +16,5 @@ class ParticleUpdateShader(BaseShader):
 
     @override
     def apply(self, bitmap: np.ndarray) -> None:
-        self.particle_system.update_angles(bitmap)
+        self.particle_system.update_angles(bitmap, self.food_bitmap, self.noise_bitmap)
         self.particle_system.update_position()

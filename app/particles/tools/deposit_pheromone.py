@@ -38,8 +38,8 @@ def _deposit_pheromone1(
 ) -> None:
     for i in prange(positions.shape[0]):
         bitmap[
-            int(positions[i, 1]),
-            int(positions[i, 0])
+            int(positions[i, 0]),
+            int(positions[i, 1])
         ] = 255
 
 def _deposit_pheromone2(

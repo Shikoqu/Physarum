@@ -7,14 +7,22 @@ from app.processing.pipeline import Pipeline
 
 
 class Engine:
-    def __init__(self, bitmap: np.ndarray, pipeline: Pipeline):
-        self.current_bitmap: np.ndarray = bitmap.swapaxes(0, 1).copy()
+    def __init__(
+            self,
+            bitmap: np.ndarray,
+            pipeline: Pipeline,
+            sensors_bitmap: np.ndarray,
+            particles_bitmap: np.ndarray,
+    ):
+        self.current_bitmap: np.ndarray = bitmap
+        self.sensors_bitmap = sensors_bitmap
+        self.particles_bitmap = particles_bitmap
         self.pipeline: Pipeline = pipeline
 
         self._clock: pg.time.Clock | None = None
         self._is_running: bool = False
 
-        self._shape: tuple[int, int] = bitmap.shape[::-1]
+        self._shape: tuple[int, int] = bitmap.shape
         self._resize_scale: tuple[float, float] = (1., 1.)
         self._window_size: tuple[int, int] | None = None
         self._display_surface: pg.Surface | None = None
@@ -44,7 +52,13 @@ class Engine:
 
     def process(self):
         self.pipeline.process_frame(self.current_bitmap)
-        image = cv2.cvtColor(self.current_bitmap, cv2.COLOR_GRAY2RGB)
+        image = np.stack([
+            self.current_bitmap,
+            self.particles_bitmap,
+            self.sensors_bitmap,
+            # self.current_bitmap,
+        ], axis=2)
+        # image = cv2.cvtColor(self.current_bitmap, cv2.COLOR_GRAY2RGB)
         surface = pg.surfarray.make_surface(image)
         surface = pg.transform.scale(surface, self._window_size)
         self._display_surface.blit(surface, (0, 0))
@@ -59,7 +73,7 @@ class Engine:
             self.process()
 
             if frame_count % 30 == 0:
-                pg.display.set_caption(f"physarum - FPS: {self._clock.get_fps():.1f}")
+                pg.display.set_caption(f"physarum - FPS: {self._clock.get_fps():.2f}")
 
             frame_count += 1
             self._clock.tick(FPS_LIMIT)

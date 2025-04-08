@@ -34,14 +34,17 @@ class ParticleSystem:
             self,
             pheromone_bitmap: np.ndarray,
             food_bitmap: np.ndarray,
-            noise_bitmap: np.ndarray,
+            noise: np.ndarray,
+            sensors_bitmap: np.ndarray,
+            particles_bitmap: np.ndarray,
     ) -> None:
         update_angles(
             self.angles,
-            sample_particles(noise_bitmap, self.positions),
-            *self._sample_sensors(
+            sample_particles(noise, self.positions, particles_bitmap),
+            self._sample_sensors(
                 pheromone_bitmap,
                 food_bitmap,
+                sensors_bitmap,
             ),
         )
 
@@ -51,19 +54,19 @@ class ParticleSystem:
     def _calculate_sensor_offsets() -> np.ndarray:
         sin_a = np.sin(SENSOR_ANGLE)
         cos_a = np.cos(SENSOR_ANGLE)
-
-        front = [    1,      0]
-        left  = [sin_a,  cos_a]
-        right = [sin_a, -cos_a]
-
-        return np.array([left, front, right]) * SENSOR_DISTANCE
+        return np.array([
+            [cos_a,  sin_a], # left sensor
+            [    1,      0], # front sensor
+            [cos_a, -sin_a], # right sensor
+        ]) * SENSOR_DISTANCE
 
     def _sample_sensors(
             self,
             pheromone_bitmap: np.ndarray,
-            food_bitmap: np.ndarray
-    ) -> tuple[np.ndarray, np.ndarray]:
-        return sample_sensors(pheromone_bitmap, food_bitmap, self._get_sensor_positions())
+            food_bitmap: np.ndarray,
+            sensors_bitmap: np.ndarray,
+    ) -> np.ndarray:
+        return sample_sensors(pheromone_bitmap, food_bitmap, self._get_sensor_positions(), sensors_bitmap)
 
     def _get_sensor_positions(self) -> np.ndarray:
         return get_sensor_positions(self.angles, self.positions, self.sensor_offsets)

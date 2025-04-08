@@ -37,23 +37,22 @@ def get_sensor_positions2(*args):
 def _get_sensor_positions1(
         angles: np.ndarray,
         positions: np.ndarray,
-        sensor_offsets: np.ndarray
+        sensor_offsets: np.ndarray,
 ) -> np.ndarray:
-    sensor_positions = np.zeros((positions.shape[0], 3, 2))
-
-    for i in prange(positions.shape[0]):
+    num_particles = positions.shape[0]
+    sensor_positions = np.zeros((num_particles, 3, 2))
+    for i in prange(num_particles):
         angle = angles[i]
         pos = positions[i]
         cos_a = np.cos(angle)
         sin_a = np.sin(angle)
 
         for j in prange(3):
-            x = sensor_offsets[j, 0]
-            y = sensor_offsets[j, 1]
-            dx = x * cos_a - y * sin_a
-            dy = x * sin_a + y * cos_a
-
-            sensor_positions[i, j] = pos + np.array([dx, dy])
+            dx = sensor_offsets[j, 0]
+            dy = sensor_offsets[j, 1]
+            sensor_positions[i, j] = pos + np.array(
+                [dx * sin_a + dy * cos_a, dx * cos_a - dy * sin_a]
+            )
 
     return sensor_positions
 
@@ -66,11 +65,10 @@ def _get_sensor_positions2(
     cos_a = np.cos(angles)[:, np.newaxis]
     sin_a = np.sin(angles)[:, np.newaxis]
 
-    dx = sensor_offsets[:, 0] * cos_a - sensor_offsets[:, 1] * sin_a
-    dy = sensor_offsets[:, 0] * sin_a + sensor_offsets[:, 1] * cos_a
-    
-    sensor_positions = np.stack([dx, dy], axis=2)
-    
-    return positions[:, np.newaxis, :] + sensor_positions
-
-    
+    return positions[:, np.newaxis, :] + np.stack(
+        [
+            sensor_offsets[:, 0] * sin_a + sensor_offsets[:, 1] * cos_a,
+            sensor_offsets[:, 0] * cos_a - sensor_offsets[:, 1] * sin_a,
+        ],
+        axis=2,
+    )

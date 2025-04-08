@@ -41,8 +41,37 @@ def _update_positions1(
         [0, 0],
         [bitmap_shape[0] - 1, bitmap_shape[1] - 1],
         out=positions,
-        )
+    )
+    handle_collision(positions, angles, bitmap_shape)
 
+
+def handle_collision(
+        positions: np.ndarray,
+        angles: np.ndarray,
+        bitmap_shape: np.ndarray,
+) -> None:
+    # on_collision_random_angle(positions, angles, bitmap_shape)
+    on_collision_bounce_walls(positions, angles, bitmap_shape)
+
+# # # # # # # # # # # # # # # # # # # # # # # # #
+
+def on_collision_random_angle(
+        positions: np.ndarray,
+        angles: np.ndarray,
+        bitmap_shape: np.ndarray,
+) -> None:
+    top_wall = np.nonzero(positions[:, 0] == 0)[0]
+    bot_wall = np.nonzero(positions[:, 0] == bitmap_shape[0] - 1)[0]
+    l_wall = np.nonzero(positions[:, 1] == 0)[0]
+    r_wall = np.nonzero(positions[:, 1] == bitmap_shape[1] - 1)[0]
+    pass
+
+
+def on_collision_bounce_walls(
+        positions: np.ndarray,
+        angles: np.ndarray,
+        bitmap_shape: np.ndarray,
+) -> None:
     horizontal_wall = np.nonzero(
         (positions[:, 0] == 0) | (positions[:, 0] == bitmap_shape[0] - 1)
     )[0]
@@ -53,5 +82,4 @@ def _update_positions1(
 
     angles[horizontal_wall] = ((2*np.pi) - angles[horizontal_wall]) % (2*np.pi)
     angles[vertical_wall] = (np.pi - angles[vertical_wall]) % (2*np.pi)
-
 

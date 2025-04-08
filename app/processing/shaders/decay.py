@@ -10,5 +10,5 @@ class Decay(BaseShader):
 
     @override
     def apply(self, bitmap: np.ndarray) -> None:
-        mask = bitmap > 0
+        mask = bitmap >= DECAY_VALUE
         np.subtract(bitmap, DECAY_VALUE, out=bitmap, where=mask)

@@ -10,7 +10,8 @@ from app.particles.tools import (
     get_sensor_positions,
     sample_sensors,
     update_angles,
-    update_positions, sample_particles,
+    update_positions,
+    sample_particles,
 )
 
 
@@ -35,17 +36,11 @@ class ParticleSystem:
             pheromone_bitmap: np.ndarray,
             food_bitmap: np.ndarray,
             noise: np.ndarray,
-            sensors_bitmap: np.ndarray,
-            particles_bitmap: np.ndarray,
     ) -> None:
         update_angles(
             self.angles,
-            sample_particles(noise, self.positions, particles_bitmap),
-            self._sample_sensors(
-                pheromone_bitmap,
-                food_bitmap,
-                sensors_bitmap,
-            ),
+            sample_particles(noise, self.positions),
+            self._sample_sensors(pheromone_bitmap, food_bitmap),
         )
 
     # # # # # # # # # # # # # # # # # # # # # # # # #
@@ -64,9 +59,8 @@ class ParticleSystem:
             self,
             pheromone_bitmap: np.ndarray,
             food_bitmap: np.ndarray,
-            sensors_bitmap: np.ndarray,
     ) -> np.ndarray:
-        return sample_sensors(pheromone_bitmap, food_bitmap, self._get_sensor_positions(), sensors_bitmap)
+        return sample_sensors(pheromone_bitmap, food_bitmap, self._get_sensor_positions())
 
     def _get_sensor_positions(self) -> np.ndarray:
         return get_sensor_positions(self.angles, self.positions, self.sensor_offsets)

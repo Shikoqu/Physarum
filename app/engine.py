@@ -9,15 +9,13 @@ from app.processing.pipeline import Pipeline
 class Engine:
     def __init__(
             self,
-            bitmap: np.ndarray,
             pipeline: Pipeline,
-            sensors_bitmap: np.ndarray,
-            particles_bitmap: np.ndarray,
+            bitmap: np.ndarray,
+            food_bitmap: np.ndarray = None,
     ):
         self.current_bitmap: np.ndarray = bitmap
-        self.sensors_bitmap = sensors_bitmap
-        self.particles_bitmap = particles_bitmap
         self.pipeline: Pipeline = pipeline
+        self.food_bitmap: np.ndarray | None = food_bitmap
 
         self._clock: pg.time.Clock | None = None
         self._is_running: bool = False
@@ -50,15 +48,33 @@ class Engine:
                 case pg.VIDEORESIZE:
                     self.resize_window((event.w, event.h))
 
+    # def process(self):
+    #     if self.food_bitmap is not None:
+    #         bg_image = cv2.cvtColor(self.food_bitmap, cv2.COLOR_GRAY2RGB)
+    #         bg_surface = pg.surfarray.make_surface(bg_image)
+    #         bg_surface = pg.transform.scale(bg_surface, self._window_size)
+    #         self._display_surface.blit(bg_surface, (0, 0))
+
+    #     self.pipeline.process_frame(self.current_bitmap)
+    #     image = cv2.cvtColor(self.current_bitmap, cv2.COLOR_GRAY2RGB)
+    #     surface = pg.surfarray.make_surface(image)
+    #     surface.set_colorkey((0, 0, 0))
+    #     surface = pg.transform.scale(surface, self._window_size)
+    #     self._display_surface.blit(surface, (0, 0))
+    #     pg.display.flip()
+
     def process(self):
         self.pipeline.process_frame(self.current_bitmap)
-        image = np.stack([
-            self.current_bitmap,
-            self.particles_bitmap,
-            self.sensors_bitmap,
-            # self.current_bitmap,
-        ], axis=2)
-        # image = cv2.cvtColor(self.current_bitmap, cv2.COLOR_GRAY2RGB)
+
+        if self.food_bitmap is not None:
+            image = np.stack([
+                self.current_bitmap,
+                self.current_bitmap,
+                self.food_bitmap,
+            ], axis=2)
+        else:
+            image = cv2.cvtColor(self.current_bitmap, cv2.COLOR_GRAY2RGB)
+
         surface = pg.surfarray.make_surface(image)
         surface = pg.transform.scale(surface, self._window_size)
         self._display_surface.blit(surface, (0, 0))
@@ -67,7 +83,7 @@ class Engine:
     def run(self):
         self.init_pygame()
         frame_count = 0
-        
+
         while self._is_running:
             self.handle_pg_events(pg.event.get())
             self.process()
@@ -77,6 +93,3 @@ class Engine:
 
             frame_count += 1
             self._clock.tick(FPS_LIMIT)
-
-            # if frame_count > 10:
-            #     break

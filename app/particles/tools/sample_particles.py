@@ -7,12 +7,10 @@ from app.utils.time_it import time_it, time_it_configure
 def sample_particles(
         noise: np.ndarray,
         positions: np.ndarray,
-        particles_bitmap: np.ndarray,
 ) -> np.ndarray:
     args = (
         noise,
         positions,
-        particles_bitmap,
     )
     return sample_particles1(*args)
     # return sample_particles2(*args)
@@ -37,17 +35,11 @@ def sample_particles2(*args):
 def _sample_particles1(
         noise: np.ndarray,
         positions: np.ndarray,
-        particles_bitmap: np.ndarray,
 ) -> np.ndarray:
     num_particles = positions.shape[0]
     samples = np.zeros(num_particles, dtype=np.float32)
-    particles_bitmap[:] = 0
 
     for i in prange(num_particles):
-        particles_bitmap[
-            int(positions[i, 0]),
-            int(positions[i, 1])
-        ] = 255
         samples[i] = noise[
             int(positions[i, 0]),
             int(positions[i, 1])

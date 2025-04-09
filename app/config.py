@@ -2,7 +2,7 @@ import numpy as np
 
 
 # main
-IMAGE_PATH: str = 'assets/poland.bmp'
+IMAGE_PATH: str = "app/assets/poland.bmp"
 FPS_LIMIT: float = 60
 
 # shaders

@@ -1,6 +1,7 @@
 import numpy as np
 import time
 import cv2
+import os
 
 from app.config import IMAGE_PATH
 from app.engine import Engine
@@ -31,12 +32,22 @@ def get_pipeline(
     return pipeline
 
 
+def get_food_bitmap(color_channel: int, invert: bool = False) -> np.ndarray:
+    if not os.path.exists(IMAGE_PATH):
+        raise FileNotFoundError(f"Image not found: {IMAGE_PATH}")
+
+    if (image := cv2.imread(IMAGE_PATH).swapaxes(0, 1)) is None:
+        raise ValueError(f"Could not read image: {IMAGE_PATH}")
+
+    bitmap = image[:, :, color_channel].copy()
+    return bitmap if not invert else 255 - bitmap
+
+
 def main():
     rng = np.random.default_rng(seed=int(time.time()))
-    image = cv2.imread(IMAGE_PATH).swapaxes(0, 1)
-    shape = image.shape[:2]
+    food_bitmap = get_food_bitmap(color_channel=1, invert=True)
+    shape = food_bitmap.shape
 
-    food_bitmap = image[:, :, 2].copy()  # Use the blue channel as food
     pheromone_bitmap = np.zeros(shape, dtype=np.uint8)
     noise = rng.random(shape, dtype=np.float32)
 

@@ -48,21 +48,6 @@ class Engine:
                 case pg.VIDEORESIZE:
                     self.resize_window((event.w, event.h))
 
-    # def process(self):
-    #     if self.food_bitmap is not None:
-    #         bg_image = cv2.cvtColor(self.food_bitmap, cv2.COLOR_GRAY2RGB)
-    #         bg_surface = pg.surfarray.make_surface(bg_image)
-    #         bg_surface = pg.transform.scale(bg_surface, self._window_size)
-    #         self._display_surface.blit(bg_surface, (0, 0))
-
-    #     self.pipeline.process_frame(self.current_bitmap)
-    #     image = cv2.cvtColor(self.current_bitmap, cv2.COLOR_GRAY2RGB)
-    #     surface = pg.surfarray.make_surface(image)
-    #     surface.set_colorkey((0, 0, 0))
-    #     surface = pg.transform.scale(surface, self._window_size)
-    #     self._display_surface.blit(surface, (0, 0))
-    #     pg.display.flip()
-
     def process(self):
         self.pipeline.process_frame(self.current_bitmap)
 

@@ -6,7 +6,7 @@ from app.config import (
     PARTICLE_DISTRIBUTION_METHOD,
     PARTICLE_DISTRIBUTION_POINT,
     PARTICLE_DISTRIBUTION_FACE_BACK,
-    PARTICLE_DISTRIBUTION_RADIUS,
+    PARTICLE_DISTRIBUTION_DIAMETER,
 )
 
 
@@ -60,7 +60,7 @@ class ParticleFactory:
         point: tuple[int, int] | None,
         face_back: bool,
     ) -> tuple[np.ndarray, np.ndarray]:
-        radius = PARTICLE_DISTRIBUTION_RADIUS * np.min(food_bitmap.shape)
+        radius = PARTICLE_DISTRIBUTION_DIAMETER * np.min(food_bitmap.shape) / 2
         angles = np.random.uniform(0, 2 * np.pi, NUM_PARTICLES)
         positions = np.column_stack((np.cos(angles), np.sin(angles))) * radius + point
         angles = self._calculate_angles(positions, point, face_back)
@@ -72,7 +72,7 @@ class ParticleFactory:
         point: tuple[int, int] | None,
         face_back: bool,
     ) -> tuple[np.ndarray, np.ndarray]:
-        radius = PARTICLE_DISTRIBUTION_RADIUS * np.min(food_bitmap.shape)
+        radius = PARTICLE_DISTRIBUTION_DIAMETER * np.min(food_bitmap.shape) / 2
         angles = np.random.uniform(0, 2 * np.pi, NUM_PARTICLES)
         random_radius = np.random.uniform(0, radius, NUM_PARTICLES)
         positions = np.column_stack((np.cos(angles), np.sin(angles))) * random_radius[:, np.newaxis] + point

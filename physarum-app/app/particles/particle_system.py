@@ -13,17 +13,17 @@ from app.particles.tools import (
     update_positions,
     sample_particles,
 )
+from app.particles.particle_factory import ParticleFactory
 
 
 class ParticleSystem:
-    def __init__(self, bitmap_shape: tuple[int, int]):
-        initial_position = np.divide(bitmap_shape, 2)  # center of image
+    def __init__(self, food_bitmap: np.ndarray):
+        factory = ParticleFactory()
+        self.positions, self.angles = factory.prime_particles(food_bitmap)
 
-        self.angles = np.linspace(0, 2 * np.pi, NUM_PARTICLES, endpoint=False)
-        self.positions = np.full((NUM_PARTICLES, 2), initial_position)
+        self._bitmap_shape = food_bitmap.shape
         self.sensor_offsets = self._calculate_sensor_offsets()
 
-        self._bitmap_shape = np.array(bitmap_shape)
 
     def update_position(self) -> None:
         update_positions(self.positions, self.angles, self._bitmap_shape)

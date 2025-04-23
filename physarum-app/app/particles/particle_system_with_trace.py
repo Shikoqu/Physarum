@@ -12,8 +12,8 @@ from app.particles.tools import (
 
 
 class ParticleSystemWithTrace(ParticleSystem):
-    def __init__(self, bitmap_shape: tuple[int, int]):
-        super().__init__(bitmap_shape)
+    def __init__(self, food_bitmap: np.ndarray):
+        super().__init__(food_bitmap)
 
     def update_position(self) -> None:
         update_positions(self.positions, self.angles, self._bitmap_shape)

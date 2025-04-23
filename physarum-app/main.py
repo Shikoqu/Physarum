@@ -3,7 +3,7 @@ import time
 import cv2
 import os
 
-from app.config import IMAGE_PATH
+from app.config import IMAGE_PATH, IMAGE_NEGATIVE
 from app.engine import Engine
 from app.particles.particle_system import ParticleSystem
 from app.processing.pipeline import Pipeline
@@ -32,7 +32,7 @@ def get_pipeline(
     return pipeline
 
 
-def get_food_bitmap(color_channel: int, invert: bool = False) -> np.ndarray:
+def get_food_bitmap(color_channel: int) -> np.ndarray:
     if not os.path.exists(IMAGE_PATH):
         raise FileNotFoundError(f"Image not found: {IMAGE_PATH}")
 
@@ -40,18 +40,18 @@ def get_food_bitmap(color_channel: int, invert: bool = False) -> np.ndarray:
         raise ValueError(f"Could not read image: {IMAGE_PATH}")
 
     bitmap = image[:, :, color_channel].copy()
-    return bitmap if not invert else 255 - bitmap
+    return bitmap if not IMAGE_NEGATIVE else 255 - bitmap
 
 
 def main():
     rng = np.random.default_rng(seed=int(time.time()))
-    food_bitmap = get_food_bitmap(color_channel=1, invert=True)
+    food_bitmap = get_food_bitmap(color_channel=1)
     shape = food_bitmap.shape
 
     pheromone_bitmap = np.zeros(shape, dtype=np.uint8)
     noise = rng.random(shape, dtype=np.float32)
 
-    particle_system = ParticleSystem(shape)
+    particle_system = ParticleSystem(food_bitmap)
     pipeline = get_pipeline(particle_system, food_bitmap, noise)
 
     engine = Engine(pipeline, pheromone_bitmap, food_bitmap)

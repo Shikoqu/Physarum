@@ -32,7 +32,7 @@ def get_pipeline_with_trace(
 
 def main_with_trace():
     rng = np.random.default_rng(seed=int(time.time()))
-    shape = (200, 100)
+    shape = (265, 144)
 
     noise = rng.random(shape, dtype=np.float32)
     food_bitmap = np.zeros(shape, dtype=np.uint8)
@@ -40,7 +40,7 @@ def main_with_trace():
     pheromone_bitmap = np.zeros(shape, dtype=np.uint8)
     particles_bitmap = np.zeros(shape, dtype=np.uint8)
 
-    particle_system = ParticleSystemWithTrace(shape)
+    particle_system = ParticleSystemWithTrace(food_bitmap)
 
     pipeline = get_pipeline_with_trace(particle_system, food_bitmap, noise, sensors_bitmap, particles_bitmap)
 

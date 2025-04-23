@@ -19,7 +19,7 @@ class Engine:
 
         self._clock: pg.time.Clock | None = None
         self._is_running: bool = False
-
+        self._is_stopped: bool = True
         self._shape: tuple[int, int] = bitmap.shape
         self._resize_scale: tuple[float, float] = (1., 1.)
         self._window_size: tuple[int, int] | None = None
@@ -47,6 +47,10 @@ class Engine:
                     self._is_running = False
                 case pg.VIDEORESIZE:
                     self.resize_window((event.w, event.h))
+                case pg.KEYDOWN if event.key == pg.K_SPACE:
+                    self._is_stopped = not self._is_stopped
+                case pg.KEYDOWN if event.key == pg.K_s:
+                    ... # save current bitmap
 
     def process(self):
         self.pipeline.process_frame(self.current_bitmap)
@@ -67,11 +71,14 @@ class Engine:
 
     def run(self):
         self.init_pygame()
+        self.process()
         frame_count = 0
 
         while self._is_running:
             self.handle_pg_events(pg.event.get())
-            self.process()
+
+            if not self._is_stopped:
+                self.process()
 
             if frame_count % 30 == 0:
                 pg.display.set_caption(f"physarum - FPS: {self._clock.get_fps():.2f}")

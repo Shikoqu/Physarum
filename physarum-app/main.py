@@ -49,8 +49,8 @@ def get_dumb_bitmap() -> np.ndarray:
 
 def main():
     rng = np.random.default_rng(seed=int(time.time()))
-    # food_bitmap = get_food_bitmap(color_channel=1)
-    food_bitmap = get_dumb_bitmap()
+    food_bitmap = get_food_bitmap(color_channel=1)
+    # food_bitmap = get_dumb_bitmap()
     shape = food_bitmap.shape
     pheromone_bitmap = np.zeros(shape, dtype=np.uint8)
     noise = rng.random(shape, dtype=np.float32)

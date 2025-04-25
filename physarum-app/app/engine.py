@@ -46,16 +46,16 @@ class Engine:
         self._display_surface = pg.display.set_mode(self._window_size, pg.RESIZABLE)
 
     def make_image(self):
-        rgb = [
-            self.pheromone_bitmap,
-            self.pheromone_bitmap,
-            self.pheromone_bitmap,
-        ]
         # rgb = [
-        #     self.food_bitmap,
-        #     self.food_bitmap,
+        #     self.pheromone_bitmap,
+        #     self.pheromone_bitmap,
         #     self.pheromone_bitmap,
         # ]
+        rgb = [
+            self.food_bitmap,
+            self.food_bitmap,
+            self.pheromone_bitmap,
+        ]
         return np.stack(rgb, axis=2)
 
     def save_frame(self):

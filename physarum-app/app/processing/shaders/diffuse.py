@@ -12,7 +12,7 @@ class Diffuse(BaseShader):
 
     @override
     def apply(self, bitmap: np.ndarray) -> None:
-        kernel_blur(bitmap)
+        gaussian_blur(bitmap)
 
 
 def gaussian_blur(bitmap: np.ndarray) -> None:

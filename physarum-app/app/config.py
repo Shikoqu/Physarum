@@ -16,15 +16,17 @@ DIFFUSE_KERNEL_SIZE: int = 3
 DIFFUSE_SIGMA: float = 0.0
 
 # particles
-NUM_PARTICLES: np.uint32 = np.uint32(1_000_000)
-SENSOR_ANGLE: np.float32 = np.float32(np.pi / 8)
-SENSOR_DISTANCE: np.uint8 = np.uint8(8)
+NUM_PARTICLES: np.uint32 = np.uint32(360_000)
+SENSOR_ANGLE: np.float32 = np.float32(np.pi / 16)
+SENSOR_DISTANCE: np.uint8 = np.uint8(16)
 
-MAX_TURN_ANGLE: np.float32 = np.float32(np.pi / 8)
-STEP_SIZE: np.float32 = np.float32(0.5)
+MAX_TURN_ANGLE: np.float32 = np.float32(np.pi / 4)
+STEP_SIZE: np.float32 = np.float32(1)
 
 # particle distribution
-PARTICLE_DISTRIBUTION_METHOD: str = "ring"  # options: "random", "center", "circle", "ring", "grid", "food_based"
+# options: "random", "center", "circle", "ring", "grid", "food_based"
+PARTICLE_DISTRIBUTION_METHOD: str = "circle"
 PARTICLE_DISTRIBUTION_POINT: tuple[float, float] | None = (0.5, 0.5)
-PARTICLE_DISTRIBUTION_FACE_BACK: bool = False
+# PARTICLE_DISTRIBUTION_POINT: tuple[float, float] | None = None
+PARTICLE_DISTRIBUTION_FACE_BACK: bool = True
 PARTICLE_DISTRIBUTION_DIAMETER: float = 0.9

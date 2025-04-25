@@ -1,7 +1,6 @@
 import numpy as np
 
 from app.config import (
-    NUM_PARTICLES,
     SENSOR_ANGLE,
     SENSOR_DISTANCE,
 )
@@ -23,7 +22,6 @@ class ParticleSystem:
 
         self._bitmap_shape = food_bitmap.shape
         self.sensor_offsets = self._calculate_sensor_offsets()
-
 
     def update_position(self) -> None:
         update_positions(self.positions, self.angles, self._bitmap_shape)

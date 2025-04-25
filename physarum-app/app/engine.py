@@ -15,7 +15,7 @@ class Engine:
             bitmap: np.ndarray,
             food_bitmap: np.ndarray = None,
     ):
-        self.current_bitmap: np.ndarray = bitmap
+        self.pheromone_bitmap: np.ndarray = bitmap
         self.pipeline: Pipeline = pipeline
         self.food_bitmap: np.ndarray = food_bitmap
 
@@ -45,19 +45,28 @@ class Engine:
         self._window_size = np.multiply(self._shape, self._resize_scale)
         self._display_surface = pg.display.set_mode(self._window_size, pg.RESIZABLE)
 
+    def make_image(self):
+        rgb = [
+            self.pheromone_bitmap,
+            self.pheromone_bitmap,
+            self.pheromone_bitmap,
+        ]
+        # rgb = [
+        #     self.food_bitmap,
+        #     self.food_bitmap,
+        #     self.pheromone_bitmap,
+        # ]
+        return np.stack(rgb, axis=2)
+
     def save_frame(self):
-        image = np.stack([
-            self.food_bitmap,
-            self.food_bitmap,
-            self.current_bitmap,
-        ], axis=2).swapaxes(0, 1)
-        
         if not self._directory_exists:
             os.makedirs(self._save_path, exist_ok=True)
             self._directory_exists = True
 
         filename = f"{self._save_path}/{self._frame_count:06d}.png"
-        cv2.imwrite(filename, cv2.cvtColor(image, cv2.COLOR_BGR2RGB))
+        cv2.imwrite(
+            filename, cv2.cvtColor(self.make_image().swapaxes(0, 1), cv2.COLOR_BGR2RGB)
+        )
 
     def handle_pg_events(self, events):
         for event in events:
@@ -72,15 +81,9 @@ class Engine:
                     self.save_frame()
 
     def process(self):
-        self.pipeline.process_frame(self.current_bitmap)
-        
-        image = np.stack([
-            self.food_bitmap,
-            self.food_bitmap,
-            self.current_bitmap,
-        ], axis=2)
+        self.pipeline.process_frame(self.pheromone_bitmap)
 
-        surface = pg.surfarray.make_surface(image)
+        surface = pg.surfarray.make_surface(self.make_image())
         surface = pg.transform.scale(surface, self._window_size)
         self._display_surface.blit(surface, (0, 0))
         pg.display.flip()

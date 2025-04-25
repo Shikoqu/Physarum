@@ -25,8 +25,8 @@ def get_pipeline(
 
     pipeline += PheromoneDepositShader(particle_system)
     pipeline += ParticleUpdateShader(particle_system, food_bitmap, noise)
-    pipeline += DiffuseAndDecay()
-    # pipeline += Diffuse()
+    # pipeline += DiffuseAndDecay()
+    pipeline += Diffuse()
     pipeline += Decay()
 
     return pipeline
@@ -43,20 +43,22 @@ def get_food_bitmap(color_channel: int) -> np.ndarray:
     return bitmap if not IMAGE_NEGATIVE else 255 - bitmap
 
 
+def get_dumb_bitmap() -> np.ndarray:
+    return np.zeros((512, 512), dtype=np.uint8)
+
+
 def main():
     rng = np.random.default_rng(seed=int(time.time()))
-    food_bitmap = get_food_bitmap(color_channel=1)
+    # food_bitmap = get_food_bitmap(color_channel=1)
+    food_bitmap = get_dumb_bitmap()
     shape = food_bitmap.shape
-
     pheromone_bitmap = np.zeros(shape, dtype=np.uint8)
     noise = rng.random(shape, dtype=np.float32)
 
     particle_system = ParticleSystem(food_bitmap)
     pipeline = get_pipeline(particle_system, food_bitmap, noise)
 
-    engine = Engine(pipeline, pheromone_bitmap, food_bitmap)
-    engine.init_pygame()
-    engine.run()
+    Engine(pipeline, pheromone_bitmap, food_bitmap).run()
 
 
 if __name__ == "__main__":

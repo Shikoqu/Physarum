@@ -25,7 +25,7 @@ class ParticleFactory:
     def prime_particles(
         self,
         food_bitmap: np.ndarray,
-    ) -> tuple[np.ndarray, np.ndarray]:
+    ) -> tuple[np.ndarray[np.float32], np.ndarray[np.float32]]:
         if PARTICLE_DISTRIBUTION_POINT is not None:
             point = food_bitmap.shape * np.array(PARTICLE_DISTRIBUTION_POINT)
         else:
@@ -114,7 +114,9 @@ class ParticleFactory:
             size=NUM_PARTICLES,
             p=prob.ravel()
         )
-        positions = np.column_stack(np.unravel_index(flat_idx, food_bitmap.shape)).astype(np.float64)
+        positions = np.column_stack(
+            np.unravel_index(flat_idx, food_bitmap.shape)
+        ).astype(np.float32)
         angles = self._calculate_angles(positions, point, face_back)
         return positions, angles
 
